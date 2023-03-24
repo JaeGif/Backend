@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const Note = require('../models/note');
+
 let notes = [
   { id: 1, content: 'HTML is easy', important: true },
   { id: 2, content: 'Browser can execute only JavaScript', important: false },
