@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 require('dotenv').config();
-const port = process.env.PORT;
 const config = require('./utilities/config');
 const notesRouter = require('./routes/notes');
 app.use(express.json());
@@ -12,6 +11,9 @@ const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 
 const url = config.MONGO_URI;
+const port = config.PORT;
+
+console.log(url);
 
 mongoose
   .connect(url)
@@ -28,3 +30,5 @@ app.use('/api', notesRouter);
 app.listen(port, () => {
   console.log(`Server running on ${port}`);
 });
+
+module.exports = app;

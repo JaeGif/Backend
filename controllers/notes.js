@@ -1,26 +1,17 @@
 const mongoose = require('mongoose');
 const Note = require('../models/note');
 
-let notes = [
-  { id: 1, content: 'HTML is easy', important: true },
-  { id: 2, content: 'Browser can execute only JavaScript', important: false },
-  {
-    id: 3,
-    content: 'GET and POST are the most important methods of HTTP protocol',
-    important: true,
-  },
-];
-exports.notes_get = (req, res, next) => {
+exports.notes_get = async (req, res, next) => {
+  const notes = await Note.find({});
   res.json(notes);
 };
 
-exports.note_get = (req, res, next) => {
+exports.note_get = async (req, res, next) => {
   const id = req.params.id;
-  const note = notes.find((note) => String(note.id) === id);
+  const note = await Note.find({ id: Number(id) });
   note ? res.json(note) : res.sendStatus(404);
-  res.json(note);
 };
-exports.notes_post = (req, res, next) => {
+exports.notes_post = async (req, res, next) => {
   const body = req.body;
 
   if (!body.content) {
@@ -30,20 +21,18 @@ exports.notes_post = (req, res, next) => {
     });
   }
 
-  const note = {
+  const note = await new Note({
     content: body.content,
     important: body.important || false,
     id: generateId(),
-  };
+  }).save();
 
-  notes = notes.concat(note);
   res.json(note);
 };
-exports.note_delete = (req, res, next) => {
+exports.note_delete = async (req, res, next) => {
   const id = req.params.id;
-  notes = notes.filter((note) => String(note.id) !== id);
-  // 204 means no content
-  response.sendStatus(204);
+  const note = await Note.findOneAndDelete({ id: Number(id) });
+  res.sendStatus(204);
 };
 
 const generateId = () => {
